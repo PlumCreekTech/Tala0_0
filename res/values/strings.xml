@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Tala0_0</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_map">Map</string>
+    <string name="action_temp">Temp</string>
+    <string name="cat_church">Churches</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="pref_updates">Location Updates</string>
+
+</resources>

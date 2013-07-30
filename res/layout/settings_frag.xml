@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:plumcreek="http://plumcreektechnology.com"
+    android:id="@+id/preference_screen"
+    android:persistent="true" >
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="onoff"
+        android:title="@string/pref_updates" >
+    </SwitchPreference>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="Main_Option"
+            android:summary="SUMMARY_Main_Option"
+            android:title="Main Option" />
+
+        <com.plumcreektechnology.tala0_0.SliderPreference
+            android:defaultValue="500"
+            android:dependency="Main_Option"
+            android:key="churches"
+            android:max="4000"
+            android:title="@string/cat_church"
+            plumcreek:interval="20"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+    </RelativeLayout>
+
+</PreferenceScreen>
