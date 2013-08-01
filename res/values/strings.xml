@@ -8,5 +8,6 @@
     <string name="cat_church">Churches</string>
     <string name="hello_world">Hello world!</string>
     <string name="pref_updates">Location Updates</string>
+    <string name="slider">Slider</string>
 
 </resources>

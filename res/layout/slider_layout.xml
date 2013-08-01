@@ -4,23 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
-    <TextView
-        android:id="@+id/slider_title"
+    <CheckBox
+        android:id="@+id/check_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="slider"
-        android:textSize="22dp" />
+        android:defaultValue="false"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/slider_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/slider_title"
-        android:orientation="vertical"
+        android:layout_below="@id/check_box"
         android:persistent="true" />
 
     <TextView
@@ -28,16 +25,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/slider_container"
-        android:layout_alignParentRight="true"
-        android:textSize="16dp" />
+        android:layout_alignBaseline="@id/check_box"
+        android:layout_alignParentRight="true" />
 
     <TextView
         android:id="@+id/slider_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/slider_container"
+        android:layout_alignBaseline="@id/check_box"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@id/slider_metric"
-        android:textSize="22dp" />
+        android:layout_toLeftOf="@id/slider_metric" />
 
 </RelativeLayout>

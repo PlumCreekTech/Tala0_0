@@ -182,27 +182,30 @@ containing a value of this type.
         public static final int ic_launcher=0x7f020018;
     }
     public static final class id {
-        public static final int action_map=0x7f05000d;
-        public static final int action_settings=0x7f05000c;
-        public static final int action_temp=0x7f05000e;
+        public static final int action_map=0x7f050011;
+        public static final int action_settings=0x7f050010;
+        public static final int action_temp=0x7f050012;
+        public static final int check_box=0x7f05000b;
+        public static final int churches_view=0x7f050007;
         public static final int hybrid=0x7f050004;
-        public static final int main_parent=0x7f05000b;
+        public static final int library_view=0x7f050009;
+        public static final int main_parent=0x7f05000f;
+        public static final int museums_view=0x7f050008;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
-        public static final int preference_screen=0x7f050005;
+        public static final int on_off_switch=0x7f050006;
         public static final int satellite=0x7f050002;
-        public static final int slider_container=0x7f050008;
-        public static final int slider_frame=0x7f050006;
-        public static final int slider_metric=0x7f050009;
-        public static final int slider_title=0x7f050007;
-        public static final int slider_value=0x7f05000a;
+        public static final int settings_screen=0x7f050005;
+        public static final int slider_container=0x7f05000c;
+        public static final int slider_frame=0x7f05000a;
+        public static final int slider_metric=0x7f05000d;
+        public static final int slider_value=0x7f05000e;
         public static final int terrain=0x7f050003;
     }
     public static final class layout {
-        public static final int category_preference=0x7f030000;
-        public static final int settings_frag=0x7f030001;
-        public static final int slider_preference=0x7f030002;
-        public static final int tala_main=0x7f030003;
+        public static final int settings_frag=0x7f030000;
+        public static final int slider_layout=0x7f030001;
+        public static final int tala_main=0x7f030002;
     }
     public static final class menu {
         public static final int tala_main=0x7f090000;
@@ -290,6 +293,7 @@ containing a value of this type.
         public static final int location_client_ulr_inactive_age_unknown=0x7f060013;
         public static final int location_client_ulr_inactive_unknown_restriction=0x7f060014;
         public static final int pref_updates=0x7f06001b;
+        public static final int slider=0x7f06001c;
     }
     public static final class style {
         /** 
