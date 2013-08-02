@@ -28,7 +28,7 @@
             android:text="@string/notification_locations" /> 
 
         <com.plumcreektechnology.tala0_0.SliderView
-            
+            android:id="@+id/churches"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -40,6 +40,7 @@
     <!--     android:id="@+id/churches_view" -->
 
         <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/museums"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -51,6 +52,7 @@
  <!--            android:id="@+id/museums_view" -->
 
         <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/libraries"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -61,7 +63,7 @@
             plumcreek:min="200" />
 <!--             android:id="@+id/library_view" -->
 
-         <com.plumcreektechnology.tala0_0.SliderView
+       <!--   <com.plumcreektechnology.tala0_0.SliderView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -179,7 +181,7 @@
             android:title="synagogues"
             plumcreek:interval="100"
             plumcreek:metric=" m"
-            plumcreek:min="200" /> 
+            plumcreek:min="200" />  -->
     </LinearLayout>
 
 </ScrollView>
