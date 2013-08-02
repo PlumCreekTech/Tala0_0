@@ -2,22 +2,25 @@ package com.plumcreektechnology.tala0_0;
 
 import java.util.TreeMap;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.plumcreektechnology.tala0_0.SettingsFragment.OnOffReceiver;
 import com.plumcreektechnology.tala0_0.SliderView.SliderReceiver;
 
-public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver {
+public class TalaMain extends FragmentActivity implements SliderReceiver, OnOffReceiver {
 
 	private final String TAG = getClass().getName();
 	private FragmentManager fragMan;
+	private SettingsFragment settingsFragment;
+	private CategoriesFragment catFragment;
 	private TreeMap<String, Integer> categoryRadii;
 	
 	// -----------------------------------LIFECYCLE UTILITIES----------------------------------------------
@@ -27,13 +30,19 @@ public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tala_main);
 		fragMan = getFragmentManager();
-		fragAdder(new SettingsFragment());
-		categoryRadii = new TreeMap<String, Integer>();
+		if (savedInstanceState == null) {
+			categoryRadii = new TreeMap<String, Integer>();
+			settingsFragment = new SettingsFragment();
+			catFragment = new CategoriesFragment();
+//			fragAdder(catFragment);
+//			fragRemover(catFragment);
+			fragAdder(settingsFragment);
+		}
 	}
 
 	protected void onStart() {
 		super.onStart();
-		//Toast.makeText(this, makePlaceSpecification(), Toast.LENGTH_LONG).show();
+		Toast.makeText(this, makePlaceSpecification(), Toast.LENGTH_LONG).show();
 	}
 	
 	@Override
@@ -41,6 +50,24 @@ public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver 
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.tala_main, menu);
 		return true;
+	}
+	
+	 /** 
+	  * when a menu item is selected starts its corresponding fragment
+	 */
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int itemId = item.getItemId();
+		switch (itemId) {
+		case (R.id.action_settings):
+			fragReplacer(settingsFragment);
+			break;
+		case (R.id.action_map):
+			//TODO mapthings
+			break;
+		case (R.id.action_temp):
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 // -----------------------------------FRAGMENT UTILITIES----------------------------------------------
@@ -79,6 +106,9 @@ public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver 
 	}
 
 // -----------------------------------SETTINGS UTILITIES----------------------------------------------
+	public void onSubgroupClick(View v){
+		fragReplacer(catFragment);
+	}
 	
 	@Override
 	public void sliderChanged(String title, int value, boolean active) {
@@ -87,7 +117,6 @@ public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver 
 		} else {
 			if(categoryRadii.containsKey(title)) categoryRadii.remove(title);
 		}
-		Log.d(TAG, "sliderChanged "+title+" "+value+" "+active);
 	}
 	
 // -----------------------------------PLACES UTILITIES----------------------------------------------
@@ -101,7 +130,7 @@ public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver 
 
 	@Override
 	public void onSwitchChanged(boolean status) {
-		Toast.makeText(this, "updates should be "+status, Toast.LENGTH_LONG).show();
+		Toast.makeText(this, "updates should be "+status, Toast.LENGTH_SHORT).show();
 	}
 	
 }

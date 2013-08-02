@@ -9,5 +9,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="pref_updates">Location Updates</string>
     <string name="slider">Slider</string>
+    <string name="notification_locations">Notification Locations</string>
 
 </resources>
