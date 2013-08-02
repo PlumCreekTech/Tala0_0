@@ -36,7 +36,7 @@ public class TalaMain extends FragmentActivity implements SliderReceiver, OnOffR
 			catFragment = new CategoriesFragment();
 //			fragAdder(catFragment);
 //			fragRemover(catFragment);
-			fragAdder(settingsFragment);
+			fragAdder(settingsFragment, false);
 		}
 	}
 
@@ -59,7 +59,7 @@ public class TalaMain extends FragmentActivity implements SliderReceiver, OnOffR
 		int itemId = item.getItemId();
 		switch (itemId) {
 		case (R.id.action_settings):
-			fragReplacer(settingsFragment);
+			fragReplacer(settingsFragment, true);
 			break;
 		case (R.id.action_map):
 			//TODO mapthings
@@ -76,10 +76,28 @@ public class TalaMain extends FragmentActivity implements SliderReceiver, OnOffR
 	 * private utility for adding fragments
 	 * @param frag
 	 */
-	private void fragAdder(Fragment frag) {
-		FragmentTransaction trans = fragMan.beginTransaction();
+	private void fragAdder(Fragment frag, boolean backStack) {
+		FragmentTransaction trans = getFragmentManager().beginTransaction();
 		trans.add(R.id.main_parent, frag);
-		trans.addToBackStack(null);
+		if (backStack)
+			trans.addToBackStack(null);
+		trans.commit();
+
+	}
+	
+	private void fragAttacher(Fragment frag, boolean backStack){
+		FragmentTransaction trans = getFragmentManager().beginTransaction();
+		trans.attach(frag);
+		if (backStack)
+			trans.addToBackStack(null);
+		trans.commit();
+	}
+	
+	private void fragDetacher(Fragment frag, boolean backStack){
+		FragmentTransaction trans = getFragmentManager().beginTransaction();
+		trans.detach(frag);
+		if (backStack)
+			trans.addToBackStack(null);
 		trans.commit();
 	}
 	
@@ -87,10 +105,11 @@ public class TalaMain extends FragmentActivity implements SliderReceiver, OnOffR
 	 * private utility for removing fragments
 	 * @param frag
 	 */
-	private void fragRemover(Fragment frag) {
+	private void fragRemover(Fragment frag, boolean backStack) {
 		FragmentTransaction trans = fragMan.beginTransaction();
 		trans.remove(frag);
-		trans.addToBackStack(null);
+		if (backStack)
+			trans.addToBackStack(null);
 		trans.commit();
 	}
 	
@@ -98,16 +117,24 @@ public class TalaMain extends FragmentActivity implements SliderReceiver, OnOffR
 	 * private utility for replacing fragments
 	 * @param frag
 	 */
-	private void fragReplacer(Fragment frag) {
+	private void fragReplacer(Fragment fragAdd, boolean backStack) {
 		FragmentTransaction trans = fragMan.beginTransaction();
-		trans.replace(R.id.main_parent, frag);
-		trans.addToBackStack(null);
+//		trans.replace(R.id.main_parent, frag);
+//		trans.detach(fragRemove); TODO will this even work?
+		if(settingsFragment.isVisible()){
+			trans.detach(settingsFragment);
+		}else if(catFragment.isVisible()){
+			trans.detach(catFragment);
+		}
+		trans.attach(fragAdd);
+		if (backStack)
+			trans.addToBackStack(null);
 		trans.commit(); 
 	}
 
 // -----------------------------------SETTINGS UTILITIES----------------------------------------------
 	public void onSubgroupClick(View v){
-		fragReplacer(catFragment);
+		fragAdder(catFragment, true);
 	}
 	
 	@Override

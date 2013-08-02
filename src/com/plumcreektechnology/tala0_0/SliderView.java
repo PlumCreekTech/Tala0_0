@@ -1,19 +1,21 @@
 package com.plumcreektechnology.tala0_0;
 
-import android.content.Context;
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.TextView;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
 
 public class SliderView extends RelativeLayout implements OnSeekBarChangeListener, OnCheckedChangeListener, Tala_Constants {
 	
@@ -46,6 +48,8 @@ public class SliderView extends RelativeLayout implements OnSeekBarChangeListene
 	private int minimum;
 	private int interval;
 	private int currentValue;
+	
+	private int stateToSave;
 	
 	
 	public SliderView(Context context, AttributeSet attrs) {
@@ -225,4 +229,85 @@ public class SliderView extends RelativeLayout implements OnSeekBarChangeListene
 			currentCheck = temp;
 		}
 	}
+	
+	@Override
+	  public Parcelable onSaveInstanceState() {
+
+	    Bundle bundle = new Bundle();
+	    bundle.putParcelable("instanceState", super.onSaveInstanceState());
+	    bundle.putInt("stateToSave", this.stateToSave);
+
+	    return bundle;
+	  }
+
+	  @Override
+	  public void onRestoreInstanceState(Parcelable state) {
+
+	    if (state instanceof Bundle) {
+	      Bundle bundle = (Bundle) state;
+	      this.stateToSave = bundle.getInt("stateToSave");
+	      super.onRestoreInstanceState(bundle.getParcelable("instanceState"));
+	      return;
+	    }
+
+	    super.onRestoreInstanceState(state);
+	  }
+	
+//	@Override
+//	  public Parcelable onSaveInstanceState() {
+//	    //begin boilerplate code that allows parent classes to save state
+//	    Parcelable superState = super.onSaveInstanceState();
+//
+//	    SavedState ss = new SavedState(superState);
+//	    //end
+//
+//	    ss.stateToSave = this.stateToSave;
+//
+//	    return ss;
+//	  }
+//
+//	  @Override
+//	  public void onRestoreInstanceState(Parcelable state) {
+//	    //begin boilerplate code so parent classes can restore state
+//	    if(!(state instanceof SavedState)) {
+//	      super.onRestoreInstanceState(state);
+//	      return;
+//	    }
+//
+//	    SavedState ss = (SavedState)state;
+//	    super.onRestoreInstanceState(ss.getSuperState());
+//	    //end
+//
+//	    this.stateToSave = ss.stateToSave;
+//	  }
+//	  
+//	  static class SavedState extends BaseSavedState {
+//		   int stateToSave;
+//
+//		    SavedState(Parcelable superState) {
+//		      super(superState);
+//		    }
+//
+//		    private SavedState(Parcel in) {
+//		      super(in);
+//		      this.stateToSave = in.readInt();
+//		    }
+//
+//		    @Override
+//		    public void writeToParcel(Parcel out, int flags) {
+//		      super.writeToParcel(out, flags);
+//		      out.writeInt(this.stateToSave);
+//		    }
+//
+//		    //required field that makes Parcelables from a Parcel
+//		    public static final Parcelable.Creator<SavedState> CREATOR =
+//		        new Parcelable.Creator<SavedState>() {
+//		          public SavedState createFromParcel(Parcel in) {
+//		            return new SavedState(in);
+//		          }
+//		          public SavedState[] newArray(int size) {
+//		            return new SavedState[size];
+//		          }
+//		    };
+//		  }
 }

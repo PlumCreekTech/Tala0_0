@@ -28,7 +28,7 @@
             android:text="@string/notification_locations" /> 
 
         <com.plumcreektechnology.tala0_0.SliderView
-            android:id="@+id/churches_view"
+            
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -37,9 +37,9 @@
             plumcreek:interval="100"
             plumcreek:metric=" m"
             plumcreek:min="200" />
+    <!--     android:id="@+id/churches_view" -->
 
         <com.plumcreektechnology.tala0_0.SliderView
-            android:id="@+id/museums_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -48,9 +48,9 @@
             plumcreek:interval="100"
             plumcreek:metric=" m"
             plumcreek:min="200" />
+ <!--            android:id="@+id/museums_view" -->
 
         <com.plumcreektechnology.tala0_0.SliderView
-            android:id="@+id/library_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -59,9 +59,9 @@
             plumcreek:interval="100"
             plumcreek:metric=" m"
             plumcreek:min="200" />
+<!--             android:id="@+id/library_view" -->
 
-        <com.plumcreektechnology.tala0_0.SliderView
-            android:id="@+id/campground_view"
+         <com.plumcreektechnology.tala0_0.SliderView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -72,7 +72,6 @@
             plumcreek:min="200" />
 
         <com.plumcreektechnology.tala0_0.SliderView
-            android:id="@+id/aquarium_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -83,7 +82,6 @@
             plumcreek:min="200" />
 
         <com.plumcreektechnology.tala0_0.SliderView
-            android:id="@+id/zoo_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -94,7 +92,6 @@
             plumcreek:min="200" />
 
         <com.plumcreektechnology.tala0_0.SliderView
-            android:id="@+id/stadium_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -105,7 +102,6 @@
             plumcreek:min="200" />
 
         <com.plumcreektechnology.tala0_0.SliderView
-            android:id="@+id/park_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -116,7 +112,6 @@
             plumcreek:min="200" />
 
         <com.plumcreektechnology.tala0_0.SliderView
-            android:id="@+id/cemetery_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -127,7 +122,6 @@
             plumcreek:min="200" />
 
         <com.plumcreektechnology.tala0_0.SliderView
-            android:id="@+id/mosques_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -138,7 +132,6 @@
             plumcreek:min="200" />
 
         <com.plumcreektechnology.tala0_0.SliderView
-            android:id="@+id/amusement_parks_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -149,7 +142,6 @@
             plumcreek:min="200" />
 
         <com.plumcreektechnology.tala0_0.SliderView
-            android:id="@+id/historical_markers_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -160,7 +152,6 @@
             plumcreek:min="200" />
 
         <com.plumcreektechnology.tala0_0.SliderView
-            android:id="@+id/courthouse_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -171,7 +162,6 @@
             plumcreek:min="200" />
 
         <com.plumcreektechnology.tala0_0.SliderView
-            android:id="@+id/embassies_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -182,7 +172,6 @@
             plumcreek:min="200" />
 
         <com.plumcreektechnology.tala0_0.SliderView
-            android:id="@+id/synagogues_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="1000"
@@ -190,7 +179,7 @@
             android:title="synagogues"
             plumcreek:interval="100"
             plumcreek:metric=" m"
-            plumcreek:min="200" />
+            plumcreek:min="200" /> 
     </LinearLayout>
 
 </ScrollView>
