@@ -14,9 +14,9 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Switch;
 
 public class SettingsFragment extends Fragment implements Tala_Constants {
-	SharedPreferences prefs;
 	private OnOffReceiver switchReceiver;
-	public final String PREFERENCE_KEY = "settings_preferences";
+	private Switch onOff;
+	private static final String ON_OFF_KEY = "main_switch";
 	
 	public interface OnOffReceiver {
 		public void onSwitchChanged(boolean status);
@@ -25,7 +25,6 @@ public class SettingsFragment extends Fragment implements Tala_Constants {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		prefs = getActivity().getSharedPreferences(PREFERENCE_KEY, Context.MODE_PRIVATE);
 		
 		try {
 			switchReceiver = (OnOffReceiver) activity;
@@ -45,17 +44,14 @@ public class SettingsFragment extends Fragment implements Tala_Constants {
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				switchReceiver.onSwitchChanged(isChecked);
-				Editor ed = prefs.edit();
-				ed.putBoolean(UPDATE_KEY, isChecked);
+
+				SharedPreferences.Editor ed = ((Context) switchReceiver).
+						getSharedPreferences(PACKAGE, Context.MODE_PRIVATE).edit();
+				ed.putBoolean(ON_OFF_KEY, isChecked);
 				ed.commit();
 			}
 			
 		});
-		if(prefs.getBoolean(UPDATE_KEY, true)){
-			onOff.setChecked(true);
-		}else{
-			onOff.setChecked(false);
-		}
 		//deal with switch in main activity
 		switchReceiver.onSwitchChanged(onOff.isChecked());
 		

@@ -41,6 +41,8 @@
             </intent-filter>
         </activity>
         
+        <service android:name="com.plumcreektechnology.tala0_0.LocationService" />
+        
         <!-- key -->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
