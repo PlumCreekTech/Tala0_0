@@ -49,6 +49,22 @@ theme attribute (in the form
 containing a value of this type.
          */
         public static final int cameraZoom=0x7f010005;
+        /** <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int defaultValue=0x7f010013;
+        /** <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int interval=0x7f01000e;
         /** <p>Must be one of the following constant values.</p>
 <table>
 <colgroup align="left" />
@@ -63,6 +79,38 @@ containing a value of this type.
 </table>
          */
         public static final int mapType=0x7f010000;
+        /** <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int max=0x7f010011;
+        /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int metric=0x7f01000f;
+        /** <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int min=0x7f010010;
+        /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int title=0x7f010012;
         /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -182,31 +230,47 @@ containing a value of this type.
         public static final int ic_launcher=0x7f020018;
     }
     public static final class id {
-        public static final int action_map=0x7f050012;
-        public static final int action_settings=0x7f050011;
-        public static final int action_temp=0x7f050013;
-        public static final int check_box=0x7f05000c;
-        public static final int churches=0x7f050008;
+        public static final int action_map=0x7f050021;
+        public static final int action_settings=0x7f050020;
+        public static final int action_temp=0x7f050022;
+        public static final int amusement_parks_view=0x7f050006;
+        public static final int aquariums_view=0x7f050007;
+        public static final int art_galleries_view=0x7f050008;
+        public static final int campgrounds_view=0x7f050009;
+        public static final int cemeteries_view=0x7f05000a;
+        public static final int check_box=0x7f05001a;
+        public static final int churches_view=0x7f05000b;
+        public static final int city_halls_view=0x7f05000c;
+        public static final int courthouses_view=0x7f05000d;
+        public static final int embassies_view=0x7f05000e;
+        public static final int establishments_view=0x7f05000f;
+        public static final int hindu_temples_view=0x7f050010;
         public static final int hybrid=0x7f050004;
-        public static final int libraries=0x7f05000a;
-        public static final int main_parent=0x7f050010;
-        public static final int museums=0x7f050009;
+        public static final int libraries_view=0x7f050011;
+        public static final int main_parent=0x7f05001e;
+        public static final int mosques_view=0x7f050012;
+        public static final int museums_view=0x7f050013;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
-        public static final int on_off_switch=0x7f050006;
-        public static final int places_subgroup=0x7f050007;
+        public static final int on_off_switch=0x7f050005;
+        public static final int parks_view=0x7f050014;
+        public static final int places_of_worship_view=0x7f050015;
         public static final int satellite=0x7f050002;
-        public static final int settings_screen=0x7f050005;
-        public static final int slider_container=0x7f05000d;
-        public static final int slider_frame=0x7f05000b;
-        public static final int slider_metric=0x7f05000e;
-        public static final int slider_value=0x7f05000f;
+        public static final int slider_container=0x7f05001b;
+        public static final int slider_frame=0x7f050019;
+        public static final int slider_metric=0x7f05001c;
+        public static final int slider_value=0x7f05001d;
+        public static final int stadiums_view=0x7f050016;
+        public static final int synagogues_view=0x7f050017;
+        public static final int temp_text=0x7f05001f;
         public static final int terrain=0x7f050003;
+        public static final int zoos_view=0x7f050018;
     }
     public static final class layout {
         public static final int settings_frag=0x7f030000;
         public static final int slider_layout=0x7f030001;
         public static final int tala_main=0x7f030002;
+        public static final int temp_frag=0x7f030003;
     }
     public static final class menu {
         public static final int tala_main=0x7f090000;
@@ -570,5 +634,113 @@ containing a value of this type.
           @attr name android:zOrderOnTop
         */
         public static final int MapAttrs_zOrderOnTop = 13;
+        /** Attributes that can be used with a SliderOptions.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #SliderOptions_defaultValue com.plumcreektechnology.tala0_0:defaultValue}</code></td><td></td></tr>
+           <tr><td><code>{@link #SliderOptions_interval com.plumcreektechnology.tala0_0:interval}</code></td><td></td></tr>
+           <tr><td><code>{@link #SliderOptions_max com.plumcreektechnology.tala0_0:max}</code></td><td></td></tr>
+           <tr><td><code>{@link #SliderOptions_metric com.plumcreektechnology.tala0_0:metric}</code></td><td></td></tr>
+           <tr><td><code>{@link #SliderOptions_min com.plumcreektechnology.tala0_0:min}</code></td><td></td></tr>
+           <tr><td><code>{@link #SliderOptions_title com.plumcreektechnology.tala0_0:title}</code></td><td></td></tr>
+           </table>
+           @see #SliderOptions_defaultValue
+           @see #SliderOptions_interval
+           @see #SliderOptions_max
+           @see #SliderOptions_metric
+           @see #SliderOptions_min
+           @see #SliderOptions_title
+         */
+        public static final int[] SliderOptions = {
+            0x7f01000e, 0x7f01000f, 0x7f010010, 0x7f010011,
+            0x7f010012, 0x7f010013
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.plumcreektechnology.tala0_0.R.attr#defaultValue}
+          attribute's value can be found in the {@link #SliderOptions} array.
+
+
+          <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:defaultValue
+        */
+        public static final int SliderOptions_defaultValue = 5;
+        /**
+          <p>This symbol is the offset where the {@link com.plumcreektechnology.tala0_0.R.attr#interval}
+          attribute's value can be found in the {@link #SliderOptions} array.
+
+
+          <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:interval
+        */
+        public static final int SliderOptions_interval = 0;
+        /**
+          <p>This symbol is the offset where the {@link com.plumcreektechnology.tala0_0.R.attr#max}
+          attribute's value can be found in the {@link #SliderOptions} array.
+
+
+          <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:max
+        */
+        public static final int SliderOptions_max = 3;
+        /**
+          <p>This symbol is the offset where the {@link com.plumcreektechnology.tala0_0.R.attr#metric}
+          attribute's value can be found in the {@link #SliderOptions} array.
+
+
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:metric
+        */
+        public static final int SliderOptions_metric = 1;
+        /**
+          <p>This symbol is the offset where the {@link com.plumcreektechnology.tala0_0.R.attr#min}
+          attribute's value can be found in the {@link #SliderOptions} array.
+
+
+          <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:min
+        */
+        public static final int SliderOptions_min = 2;
+        /**
+          <p>This symbol is the offset where the {@link com.plumcreektechnology.tala0_0.R.attr#title}
+          attribute's value can be found in the {@link #SliderOptions} array.
+
+
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:title
+        */
+        public static final int SliderOptions_title = 4;
     };
 }

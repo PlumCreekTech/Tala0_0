@@ -16,7 +16,7 @@ import android.widget.Switch;
 public class SettingsFragment extends Fragment implements Tala_Constants {
 	private OnOffReceiver switchReceiver;
 	private Switch onOff;
-	private static final String ON_OFF_KEY = "main_switch";
+//	private static final String ON_OFF_KEY = "main_switch";
 	
 	public interface OnOffReceiver {
 		public void onSwitchChanged(boolean status);
@@ -38,15 +38,16 @@ public class SettingsFragment extends Fragment implements Tala_Constants {
 		View layout =  inflater.inflate(R.layout.settings_frag, container, false);
 		
 		//on/off switch
-		Switch onOff = (Switch) layout.findViewById(R.id.on_off_switch);
+		SharedPreferences prefs = ((Context) switchReceiver).getSharedPreferences(PACKAGE, Context.MODE_PRIVATE);
+		onOff = (Switch) layout.findViewById(R.id.on_off_switch);
+		onOff.setChecked(prefs.getBoolean(ON_OFF_KEY,false));
 		onOff.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				switchReceiver.onSwitchChanged(isChecked);
-
-				SharedPreferences.Editor ed = ((Context) switchReceiver).
-						getSharedPreferences(PACKAGE, Context.MODE_PRIVATE).edit();
+				
+				SharedPreferences.Editor ed = ((Context) switchReceiver).getSharedPreferences(PACKAGE, Context.MODE_PRIVATE).edit();
 				ed.putBoolean(ON_OFF_KEY, isChecked);
 				ed.commit();
 			}

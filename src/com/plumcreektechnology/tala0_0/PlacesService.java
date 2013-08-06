@@ -12,20 +12,47 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.IntentService;
+import android.app.Service;
+import android.content.Intent;
+import android.os.Binder;
+import android.os.IBinder;
 import android.util.Log;
 
-public class PlacesService implements Tala_Constants {
+public class PlacesService extends IntentService implements Tala_Constants {
 
-	private String API_KEY;
+// -----------------------------------BINDER METHODS----------------------------------------------
 
-	public PlacesService(String apikey) {
-		this.API_KEY = apikey;
+	/**
+	 * Returns IBinder so activities can bind to this for communication purposes
+	 */
+	public class PlacesBinder extends Binder {
+		public PlacesService getService() {
+			return PlacesService.this;
+		}
 	}
 
-	public void setApiKey(String apikey) {
-		this.API_KEY = apikey;
+	@Override
+	public IBinder onBind(Intent intent) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
+// -----------------------------------CONTSTRUCTOR AND ON HANDLE INTENT----------------------------------------------
+
+	public PlacesService() {
+		super("PlacesService");
+	}
+	
+	@Override
+	protected void onHandleIntent(Intent intent) {
+		// TODO Auto-generated method stub
+
+	}
+
+// -----------------------------------ALL THE STUFF IT DOES----------------------------------------------
+
+	
 	public ArrayList<Place> findPlaces(double latitude, double longitude,
 			String placeSpacification) {
 
@@ -102,4 +129,5 @@ public class PlacesService implements Tala_Constants {
 		}
 		return content.toString();
 	}
+
 }

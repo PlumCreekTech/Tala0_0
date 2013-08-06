@@ -41,7 +41,9 @@
             </intent-filter>
         </activity>
         
-        <service android:name="com.plumcreektechnology.tala0_0.LocationService" />
+        <service 
+             android:name="com.plumcreektechnology.tala0_0.LocationService" />
+        <!-- android:process=":remote" -->
         
         <!-- key -->
         <meta-data

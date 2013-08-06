@@ -2,15 +2,13 @@ package com.plumcreektechnology.tala0_0;
 
 import java.util.Timer;
 
-import android.app.IntentService;
 import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Messenger;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -86,11 +84,14 @@ public class LocationService extends Service implements Tala_Constants,
 		locationRequest.setInterval(UPDATE_INTERVAL_MS);
 		locationRequest.setFastestInterval(FASTEST_INTERVAL_MS);
 		locationClient = new LocationClient(this, this, this);
+		Log.d(TAG, "created location request and client");
 	}
 
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		locationClient.connect();
+		Log.d(TAG, "tried to connect client");
 		return super.onStartCommand(intent, flags, startId);
 	}
 
@@ -106,6 +107,7 @@ public class LocationService extends Service implements Tala_Constants,
 	
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {
+		Log.e(TAG, "location connection failed!");
 		// TODO check if the main is running or activate it if it is not, don't die silently!
 //        if (connectionResult.hasResolution()) {
 //            try {
@@ -138,7 +140,7 @@ public class LocationService extends Service implements Tala_Constants,
 		// TODO call PlacesService
 		//PlacesService pserv = new PlacesService();
 		//ArrayList<Place> plist = pserv.findPlaces(location.getLatitude(), location.getLongitude(), placesSpecification);
-		Toast.makeText(this, "location changed "+location.getLatitude()+" - "+location.getLongitude(), Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "location changed: "+location.getLatitude()+" - "+location.getLongitude(), Toast.LENGTH_SHORT).show();
 		
 	}
 
