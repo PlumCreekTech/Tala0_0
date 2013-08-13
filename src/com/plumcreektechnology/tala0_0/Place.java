@@ -3,6 +3,7 @@ package com.plumcreektechnology.tala0_0;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,6 +14,7 @@ public class Place {
 	private String vicinity;
 	private Double latitude;
 	private Double longitude;
+	private String[] types;
 
 	public String getId() {
 		return id;
@@ -62,6 +64,14 @@ public class Place {
 		this.vicinity = vicinity;
 	}
 
+	public String[] getTypes() {
+		return types;
+	}
+
+	public void setTypes(String[] types) {
+		this.types = types;
+	}
+
 	static Place jsonToPontoReferencia(JSONObject pontoReferencia) {
 		try {
 			Place result = new Place();
@@ -73,6 +83,12 @@ public class Place {
 			result.setName(pontoReferencia.getString("name"));
 			result.setVicinity(pontoReferencia.getString("vicinity"));
 			result.setId(pontoReferencia.getString("id"));
+			JSONArray jsonTypes = (JSONArray) pontoReferencia.getJSONArray("types");
+			String[] types = new String[jsonTypes.length()];
+			for(int i=0; i<jsonTypes.length(); i++) {
+				types[i] = jsonTypes.getString(i);
+			}
+			result.setTypes(types);
 			return result;
 		} catch (JSONException ex) {
 			Logger.getLogger(Place.class.getName()).log(Level.SEVERE, null, ex);
@@ -83,7 +99,7 @@ public class Place {
 	@Override
 	public String toString() {
 		return "Place{" + "id=" + id + ", icon=" + icon + ", name=" + name
-				+ ", latitude=" + latitude + ", longitude=" + longitude + '}';
+				+ ", latitude=" + latitude + ", longitude=" + longitude + ", types="+ types.toString() + '}';
 	}
 
 }

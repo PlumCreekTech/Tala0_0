@@ -1,173 +1,251 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:plumcreek="http://plumcreektechnology.com"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:plumcreek="http://schemas.android.com/apk/res/com.plumcreektechnology.tala0_0"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-<LinearLayout 
-    android:id="@+id/settings_screen"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:orientation="vertical" >
+    android:layout_height="match_parent" >
 
-    <Switch
-        android:id="@+id/on_off_switch"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="updates"
-        android:textSize="22sp" />
+        android:background="#FFFFFF"
+        android:orientation="vertical" >
 
-    <com.plumcreektechnology.tala0_0.SliderView
-        android:id="@+id/churches_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:defaultValue="1000"
-        android:max="50000"
-        android:title="churches"
-        plumcreek:interval="100"
-        plumcreek:metric=" m"
-        plumcreek:min="200" />
+        <Switch
+            android:id="@+id/on_off_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="updates"
+            android:textSize="22sp" />
 
-    <com.plumcreektechnology.tala0_0.SliderView
-        android:id="@+id/museums_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:defaultValue="1000"
-        android:max="50000"
-        android:title="museums"
-        plumcreek:interval="100"
-        plumcreek:metric=" m"
-        plumcreek:min="200" />
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/amusement_parks_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="amusement_park"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="amusement parks"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+        
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/aquariums_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="aquarium"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="aquariums"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+        
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/art_galleries_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="art_gallery"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="art galleries"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+        
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/campgrounds_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="campground"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="campgrounds"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+        
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/cemeteries_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="cemetery"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="cemeteries"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+        
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/churches_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="church"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="churches"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+        
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/city_halls_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="city_hall"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="city halls"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+        
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/courthouses_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="courthouse"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="courthouses"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+        
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/embassies_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="embassy"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="embassies"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+        
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/establishments_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="establishment"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="establishments"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+        
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/hindu_temples_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="hindu_temple"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="hindu temples"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+        
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/libraries_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="library"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="libraries"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+        
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/mosques_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="mosque"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="mosques"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+        
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/museums_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="museum"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="museums"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
 
-    <com.plumcreektechnology.tala0_0.SliderView
-        android:id="@+id/library_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:defaultValue="1000"
-        android:max="50000"
-        android:title="libraries"
-        plumcreek:interval="100"
-        plumcreek:metric=" m"
-        plumcreek:min="200" />
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/parks_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="park"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="parks"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+        
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/places_of_worship_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="place_of_worship"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="places of worship"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+        
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/stadiums_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="stadium"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="stadiums"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+        
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/synagogues_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="synagogue"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="synagogues"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
+        
+        <com.plumcreektechnology.tala0_0.SliderView
+            android:id="@+id/zoos_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            plumcreek:type="zoo"
+            plumcreek:defaultValue="1000"
+            plumcreek:max="50000"
+            plumcreek:title="zoos"
+            plumcreek:interval="100"
+            plumcreek:metric=" m"
+            plumcreek:min="200" />
 
-    <com.plumcreektechnology.tala0_0.SliderView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:defaultValue="1000"
-        android:max="50000"
-        android:title="campground"
-        plumcreek:interval="100"
-        plumcreek:metric=" m"
-        plumcreek:min="200" />
+    </LinearLayout>
 
-    <com.plumcreektechnology.tala0_0.SliderView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:defaultValue="1000"
-        android:max="50000"
-        android:title="aquarium"
-        plumcreek:interval="100"
-        plumcreek:metric=" m"
-        plumcreek:min="200" />
-
-    <com.plumcreektechnology.tala0_0.SliderView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:defaultValue="1000"
-        android:max="50000"
-        android:title="zoo"
-        plumcreek:interval="100"
-        plumcreek:metric=" m"
-        plumcreek:min="200" />
-
-    <com.plumcreektechnology.tala0_0.SliderView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:defaultValue="1000"
-        android:max="50000"
-        android:title="stadium"
-        plumcreek:interval="100"
-        plumcreek:metric=" m"
-        plumcreek:min="200" />
-
-    <com.plumcreektechnology.tala0_0.SliderView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:defaultValue="1000"
-        android:max="50000"
-        android:title="park"
-        plumcreek:interval="100"
-        plumcreek:metric=" m"
-        plumcreek:min="200" />
-
-    <com.plumcreektechnology.tala0_0.SliderView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:defaultValue="1000"
-        android:max="50000"
-        android:title="cemetery"
-        plumcreek:interval="100"
-        plumcreek:metric=" m"
-        plumcreek:min="200" />
-
-    <com.plumcreektechnology.tala0_0.SliderView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:defaultValue="1000"
-        android:max="50000"
-        android:title="mosques"
-        plumcreek:interval="100"
-        plumcreek:metric=" m"
-        plumcreek:min="200" />
-
-    <com.plumcreektechnology.tala0_0.SliderView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:defaultValue="1000"
-        android:max="50000"
-        android:title="amusement parks"
-        plumcreek:interval="100"
-        plumcreek:metric=" m"
-        plumcreek:min="200" />
-
-    <com.plumcreektechnology.tala0_0.SliderView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:defaultValue="1000"
-        android:max="50000"
-        android:title="historical marker"
-        plumcreek:interval="100"
-        plumcreek:metric=" m"
-        plumcreek:min="200" />
-
-    <com.plumcreektechnology.tala0_0.SliderView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:defaultValue="1000"
-        android:max="50000"
-        android:title="courthouse"
-        plumcreek:interval="100"
-        plumcreek:metric=" m"
-        plumcreek:min="200" />
-
-    <com.plumcreektechnology.tala0_0.SliderView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:defaultValue="1000"
-        android:max="50000"
-        android:title="embassies"
-        plumcreek:interval="100"
-        plumcreek:metric=" m"
-        plumcreek:min="200" />
-
-    <com.plumcreektechnology.tala0_0.SliderView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:defaultValue="1000"
-        android:max="50000"
-        android:title="synagogues"
-        plumcreek:interval="100"
-        plumcreek:metric=" m"
-        plumcreek:min="200" />
-</LinearLayout>
 </ScrollView>

@@ -6,11 +6,11 @@
         android:showAsAction="ifRoom"
         android:title="@string/action_settings"/>
     
-    <item
+   <item
         android:id="@+id/action_map"
         android:orderInCategory="100"
         android:showAsAction="ifRoom"
-        android:title="@string/action_map"/>
+        android:title="@string/action_map"/> 
     
     <item
         android:id="@+id/action_temp"
