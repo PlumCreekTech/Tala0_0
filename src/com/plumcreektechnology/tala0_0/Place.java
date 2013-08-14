@@ -16,6 +16,30 @@ public class Place {
 	private Double longitude;
 	private String[] types;
 
+	static Place jsonToPontoReferencia(JSONObject pontoReferencia) {
+		try {
+			Place result = new Place();
+			JSONObject geometry = (JSONObject) pontoReferencia.get("geometry");
+			JSONObject location = (JSONObject) geometry.get("location");
+			result.setLatitude((Double) location.get("lat"));
+			result.setLongitude((Double) location.get("lng"));
+			result.setIcon(pontoReferencia.getString("icon"));
+			result.setName(pontoReferencia.getString("name"));
+			result.setVicinity(pontoReferencia.getString("vicinity"));
+			result.setId(pontoReferencia.getString("id"));
+			JSONArray jsonTypes = (JSONArray) pontoReferencia.getJSONArray("types");
+			String[] types = new String[jsonTypes.length()];
+			for(int i=0; i<jsonTypes.length(); i++) {
+				types[i] = jsonTypes.getString(i);
+			}
+			result.setTypes(types);
+			return result;
+		} catch (JSONException ex) {
+			Logger.getLogger(Place.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return null;
+	}
+	
 	public String getId() {
 		return id;
 	}
@@ -72,29 +96,7 @@ public class Place {
 		this.types = types;
 	}
 
-	static Place jsonToPontoReferencia(JSONObject pontoReferencia) {
-		try {
-			Place result = new Place();
-			JSONObject geometry = (JSONObject) pontoReferencia.get("geometry");
-			JSONObject location = (JSONObject) geometry.get("location");
-			result.setLatitude((Double) location.get("lat"));
-			result.setLongitude((Double) location.get("lng"));
-			result.setIcon(pontoReferencia.getString("icon"));
-			result.setName(pontoReferencia.getString("name"));
-			result.setVicinity(pontoReferencia.getString("vicinity"));
-			result.setId(pontoReferencia.getString("id"));
-			JSONArray jsonTypes = (JSONArray) pontoReferencia.getJSONArray("types");
-			String[] types = new String[jsonTypes.length()];
-			for(int i=0; i<jsonTypes.length(); i++) {
-				types[i] = jsonTypes.getString(i);
-			}
-			result.setTypes(types);
-			return result;
-		} catch (JSONException ex) {
-			Logger.getLogger(Place.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		return null;
-	}
+
 
 	@Override
 	public String toString() {

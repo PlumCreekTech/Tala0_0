@@ -25,6 +25,7 @@ public class GeofenceReceiverService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
+		Log.d(TAG, "in geofence receiver!");
 		Log.d(TAG, intent.toString());
 		// check for errors
 		if (LocationClient.hasError(intent)) {
@@ -53,7 +54,7 @@ public class GeofenceReceiverService extends IntentService {
 				Intent intend = new Intent(getApplicationContext(), TalaMain.class);
 				intend.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 				intend.putExtra("triggers", triggerIds);
-				intend.putExtra("dialog", true);
+				intend.putExtra("popup", true);
 				getApplicationContext().startActivity(intend);
 				
 				Toast.makeText(getApplicationContext(), "these triggers "+triggerIds, Toast.LENGTH_LONG).show();

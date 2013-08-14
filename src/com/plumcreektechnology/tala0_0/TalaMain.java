@@ -1,11 +1,13 @@
 package com.plumcreektechnology.tala0_0;
 
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.ComponentName;
@@ -20,6 +22,10 @@ import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -30,6 +36,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.plumcreektechnology.tala0_0.LocationService.LocationBinder;
+import com.plumcreektechnology.tala0_0.PopUpAdapter.PopUpCallbacks;
 import com.plumcreektechnology.tala0_0.SettingsFragment.OnOffReceiver;
 import com.plumcreektechnology.tala0_0.SliderView.SliderReceiver;
 
@@ -40,11 +47,12 @@ import com.plumcreektechnology.tala0_0.SliderView.SliderReceiver;
  *
  */
 
-public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver, Tala_Constants {
+public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver, Tala_Constants, PopUpCallbacks {
 
 	private final String TAG = getClass().getName();
 	private TreeMap<String, Integer> categoryRadii;
 	private boolean onOff;
+	private ListView popupList;
 	
 	// -----------------------------------UTILITIES TO BIND----------------------------------------------
 	private LocationService locationService;
@@ -59,24 +67,25 @@ public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver,
 	        onBound();
 	    }
 	    
-	    public void onServiceDisconnected(ComponentName arg0) {
-	    	Log.d(TAG, "in on service disconnected");
-	        locationBound = false;
-	    }
-	    
-	   };
-	   
-		@SuppressLint("HandlerLeak")
-		Handler locationHandler = new Handler() {
-			  @Override
-			  public void handleMessage(Message msg) {
-				  Bundle bundle = msg.getData();
-				  locationUpdate(bundle.getDouble("latitude", 0.0), bundle.getDouble("longitude", 180.0));
-			     }
-			 };
-	
-	// -----------------------------------LIFECYCLE UTILITIES----------------------------------------------
-	
+		public void onServiceDisconnected(ComponentName arg0) {
+			Log.d(TAG, "in on service disconnected");
+			locationBound = false;
+		}
+
+	};
+
+	@SuppressLint("HandlerLeak")
+	Handler locationHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			Bundle bundle = msg.getData();
+			locationUpdate(bundle.getDouble("latitude", 0.0),
+					bundle.getDouble("longitude", 180.0));
+		}
+	};
+
+// -----------------------------------LIFECYCLE----------------------------------------------
+			 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -84,10 +93,10 @@ public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver,
 		categoryRadii = new TreeMap<String, Integer>();
 		onOff = getSharedPreferences(PACKAGE, Context.MODE_PRIVATE).getBoolean(ON_OFF_KEY, false);
 		
-		if( getIntent().getBooleanExtra("dialog", false)) {
+		if( getIntent().getBooleanExtra("popup", false)) {
 			// TODO display popup
-			Log.d(TAG, "should display dialog fragment");
-			//fragAdder(new PopUpFragment(), false); // do not add to backstack, should display alone
+			Log.d(TAG, "should display popup fragment from onCreate");
+			displayPopUp(getIntent().getStringArrayExtra("triggers"), true);
 		} else {
 			// open the last open fragment (not including popup)
 			Toast.makeText(this, "should display last open fragment", Toast.LENGTH_SHORT).show();
@@ -125,12 +134,16 @@ public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver,
 		
 	}
 	
-	protected void onNewIntent() {
+	@Override
+	protected void onNewIntent(Intent intent) {
 		// onCreate is SKIPPED if onNewIntent() is invoked
 		// make sure on NewIntent() is skipped when onCreate() is invoked
-		Log.d(TAG, "enterd onNewIntent()");
-		// lifecycle goes onPause(), onNewIntent(), onResume(), and we have not implemented onPause or onResume
-		//fragAdder(new PopUpFragment(), false); // do not add to backstack, super impose on existing fragment
+		Log.d(TAG, "entered onNewIntent()");
+		if( intent.getBooleanExtra("popup", false)) {
+			// TODO display popup
+			Log.d(TAG, "should display popup fragment from newIntent");
+			displayPopUp(getIntent().getStringArrayExtra("triggers"), false);
+		}
 	}
 	
 	@Override
@@ -247,6 +260,34 @@ public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver,
 		return PACKAGE + "_" + KEY ;
 	}
 	
+	private void displayPopUp(String[] triggers, boolean dismiss) {
+		ArrayList<String> activeTrigs = locationService.getActiveIds();
+
+		// combine the arrays without repeats
+		for(int i=0; i<triggers.length; i++) {
+			String trigger = triggers[i];
+			boolean add = true;
+			for(int j=0; j<activeTrigs.size(); j++) {
+				if(trigger.equals(activeTrigs.get(j))) { // try it without maybe ? pointers ?
+					add=false;
+				}
+			}
+			if(add) {
+				activeTrigs.add(trigger);
+			}
+		}
+		
+		
+		String[] names = new String[activeTrigs.size()];
+		for(int i=0; i<triggers.length; i++) {
+			names[i] = locationService.getReadableFromId(activeTrigs.get(i));
+		}
+		PopUpFragment popup = PopUpFragment.newInstance( (String[]) activeTrigs.toArray(), names, dismiss);
+		popupList = ((AlertDialog) popup.getDialog()).getListView();
+	    popup.show(getFragmentManager(), TAG);
+	    locationService.setActiveIds(activeTrigs);
+	}
+	
 // -----------------------------------SETTINGS UTILITIES----------------------------------------------
 	
 	/**
@@ -288,7 +329,7 @@ public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver,
 	@Override
 	public void sliderChanged(String type, int value, boolean active) {
 		if(active) {
-			categoryRadii.put(type, value);
+			categoryRadii.put(type, (int) (1609.34*value));
 		} else {
 			if(categoryRadii.containsKey(type)) categoryRadii.remove(type);
 		}
@@ -373,6 +414,29 @@ public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver,
 	        }
 	    }
 	    return false;
+	}
+
+// -----------------------------------POP UP CALLBACKS----------------------------------------------	
+	
+	@Override
+	public void removeButton(String geoId, View v) {
+		Log.d(TAG, "removeButton callback");
+		popupList.removeView(v);
+		locationService.removeActiveId(geoId); // pointers SHOULD match but hey, who knows
+	}
+
+	@Override
+	public void infoButton(String geoId) {
+		Log.d(TAG, "infoButton callback");
+		
+		// TODO get and display info with async task
+	}
+
+	@Override
+	public void visitButton(String geoId) {
+		Log.d(TAG, "visitButton callback");
+		
+		// TODO get and diplay directions on the map with async task
 	}
 
 }

@@ -50,6 +50,8 @@ public class LocationService extends Service implements Tala_Constants,
 	private TreeMap<String, Integer> categoryRadii;
 //	private String placeSpecification;
 	private TreeMap<String, Place> activeFences;
+	private ArrayList<String> activeIds = new ArrayList<String>();
+	private Location currentLocation;
 
 // -----------------------------------BINDER METHODS----------------------------------------------
 
@@ -199,6 +201,7 @@ public class LocationService extends Service implements Tala_Constants,
 	 */
 	@Override
 	public void onLocationChanged(Location location) {
+		currentLocation = location;
 		// if there are categories checked, get the nearby places that fit the criteria
 		if(categoryRadii.size()>0) new GetPlaces().execute(new PlaceQuery(location.getLatitude(), location.getLongitude(), makePlaceSpecification(), 50000));
 		// if there are not categories checked AND there are fences, call MakeFences in such a way that it removes all fences
@@ -257,18 +260,37 @@ public class LocationService extends Service implements Tala_Constants,
 		
 		@Override
 		protected TreeMap<String, Place> doInBackground(TreeMap<String, Place>... params) {
+			
 			//if(!client.isConnected()) return new TreeMap<String, Place>();
 			TreeMap<String, Place> newFences = params[0];
-			TreeMap<String, Place> realFences = new TreeMap<String, Place>();
-			Log.d(TAG, "old fences before loop has "+oldFences.size());
-			Log.d(TAG, "new fences before loop has "+newFences.size());
-			Log.d(TAG, "real fences before loop has "+realFences.size());
-//			Log.d(TAG, "old fences look like ::: "+oldFences.toString());
+			
+			// if distance between a potential new fence, and current location is less than 
+			// category radii distance of its type, don't make a geofence for it, make an alert for it
 			ArrayList<String> removeIDs = new ArrayList<String>();
+			for( Entry<String, Place> entry : newFences.entrySet()) {
+				Location dest = new Location("blah");
+				dest.setLatitude(entry.getValue().getLatitude());
+				dest.setLongitude(entry.getValue().getLongitude());
+				int dist = (int) currentLocation.distanceTo(dest);
+				Log.d(TAG, "distance to "+entry.getValue().getName()+" is "+(float)(dist/1609.34));
+				if( dist < typesAverage(entry.getValue().getTypes())) {
+					Log.v(TAG, entry.getValue().getName()+" is already within proximity");
+					removeIDs.add(entry.getKey());
+				}
+			}
+			Log.v(TAG, "eliminating "+removeIDs.size()+" potential geofences");
+			for( String id : removeIDs) {
+				newFences.remove(id);
+			}
+			
+			
+			TreeMap<String, Place> realFences = new TreeMap<String, Place>();
+//			Log.d(TAG, "old fences before loop has "+oldFences.size());
+			Log.d(TAG, "new fences before loop has "+newFences.size());
+//			Log.d(TAG, "real fences before loop has "+realFences.size());
+			removeIDs.clear();
 			for( Entry<String, Place> entry : oldFences.entrySet()) {
-//				Log.d(TAG, "in loop");
 				if(newFences.containsKey(entry.getKey())) {
-//					Log.d(TAG, "contains place in loop");
 					Place place = entry.getValue();
 					realFences.put(place.getId(), place);
 					newFences.remove(place.getId());
@@ -333,6 +355,7 @@ public class LocationService extends Service implements Tala_Constants,
 	}
 	
 	public PendingIntent getGeofenceReceiverIntent() {
+		Log.d(TAG, "getting Geofence pending intent");
 		Intent intent = new Intent(getApplicationContext(), GeofenceReceiverService.class);
 		return PendingIntent.getService(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
@@ -353,14 +376,14 @@ public class LocationService extends Service implements Tala_Constants,
 		protected TreeMap<String, Place> doInBackground(PlaceQuery... params) {
 			PlaceQuery pq = params[0];
 			String urlString = makeUrl(pq.getLatitude(), pq.getLongitude(), pq.getPlaces(), pq.getRadius());
+			TreeMap<String, Place> treeMap = new TreeMap<String, Place>();
+			String nextPageToken = "";
 
 			try {
 				String json = getJSON(urlString);
-				//Log.d(TAG, "JSON ::: "+json);
 				JSONObject object = new JSONObject(json);
+				// get the results
 				JSONArray array = object.getJSONArray("results");
-
-				TreeMap<String, Place> treeMap = new TreeMap<String, Place>();
 				for (int i = 0; i < array.length(); i++) {
 					try {
 						Place place = Place
@@ -368,14 +391,60 @@ public class LocationService extends Service implements Tala_Constants,
 						//Log.v("Places Services ", "" + place);
 						treeMap.put(place.getId(), place);
 					} catch (Exception e) {
+						// TODO
 					}
 				}
-				return treeMap;
+				// get next page token
+				if(object.has("next_page_token")) {
+					nextPageToken = object.getString("next_page_token");
+					//Log.d(TAG, "just got a next page token "+nextPageToken);
+				}
+				
 			} catch (JSONException ex) {
 				Logger.getLogger(LocationService.class.getName()).log(Level.SEVERE,
 						null, ex);
+				return null;
 			}
-			return null;
+			
+			int token=2;
+			if (!nextPageToken.isEmpty() && nextPageToken!=null && token>0) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				--token;
+				String tokenUrl = makeTokenUrl(nextPageToken);
+				try {
+					String json = getJSON(tokenUrl);
+					JSONObject object = new JSONObject(json);
+					// get the results
+					JSONArray array = object.getJSONArray("results");
+					for (int i = 0; i < array.length(); i++) {
+						try {
+							Place place = Place
+									.jsonToPontoReferencia((JSONObject) array.get(i));
+							//Log.v("Places Services ", "" + place);
+							treeMap.put(place.getId(), place);
+						} catch (Exception e) {
+							// TODO
+							Log.e(TAG, "token url error: "+e.toString());
+						}
+					}
+					// get next page token
+					if(object.has("next_page_token")) {
+						nextPageToken = object.getString("next_page_token");
+						//Log.d(TAG, "just got a next page token!!!");
+					}
+					
+				} catch (JSONException ex) {
+					Logger.getLogger(LocationService.class.getName()).log(Level.SEVERE,
+							null, ex);
+					return null;
+				}
+			}
+			Log.d(TAG, "tree map from getPlaces has "+treeMap.size()+" elements");
+			return treeMap;
 		}
 		
 		@Override
@@ -407,6 +476,14 @@ public class LocationService extends Service implements Tala_Constants,
 			urlString.append("&sensor=true&key=" + API_KEY);
 		}
 		Log.d(TAG, urlString.toString());
+		return urlString.toString();
+	}
+	
+	private String makeTokenUrl(String token) {
+		Log.d(TAG, "making token url");
+		StringBuilder urlString = new StringBuilder("https://maps.googleapis.com/maps/api/place/search/json?");
+		urlString.append("pagetoken="+token);
+		urlString.append("&sensor=true&key=" + API_KEY);
 		return urlString.toString();
 	}
 
@@ -485,5 +562,20 @@ public class LocationService extends Service implements Tala_Constants,
 			break;
 		}
 	}
+
+	public ArrayList<String> getActiveIds() {
+		return activeIds;
+	}
+
+	public void setActiveIds(ArrayList<String> activeIds) {
+		this.activeIds = activeIds;
+	}
+	
+	public void removeActiveId(String geoId) {
+		Log.d(TAG, "before remove activeIds size is "+activeIds.size());
+		activeIds.remove(geoId);
+		Log.d(TAG, "after remove activeIds size is "+activeIds.size());
+	}
+
 
 }

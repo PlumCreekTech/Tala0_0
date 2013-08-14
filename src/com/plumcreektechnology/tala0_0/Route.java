@@ -18,7 +18,7 @@ public class Route {
 	private Location boundSW; // location of south west bound
 	private String copyright; // copyright info
 	private String warnings; // array of warnings TODO should be an array but it looked complicated from JSON
-	private ArrayList<Leg> legs; // arraylist of legs of this route
+	private Leg leg; // arraylist of legs of this route
 	
 	static Route jsonToRoute(JSONObject json) {
 		try {
@@ -43,12 +43,9 @@ public class Route {
 			
 			result.setCopyright(json.getString("copyrights"));
 			result.setWarnings(json.getJSONArray("warnings").toString(4));
-			
-			result.setLegs(new ArrayList<Leg>());
+
 			JSONArray legs = json.getJSONArray("legs");
-			for(int i=0; i<legs.length(); i++) {
-				result.addLeg(Leg.jsonToLeg(legs.getJSONObject(i)));
-			}
+			result.setLeg( Leg.jsonToLeg(legs.getJSONObject(0)));
 			return result;
 		} catch (JSONException ex) {
 			Logger.getLogger(Place.class.getName()).log(Level.SEVERE, null, ex);
@@ -96,21 +93,19 @@ public class Route {
 	public void setWarnings(String warnings) {
 		this.warnings = warnings;
 	}
-	public ArrayList<Leg> getLegs() {
-		return legs;
+	public Leg getLegs() {
+		return leg;
 	}
-	public void setLegs(ArrayList<Leg> legs) {
-		this.legs = legs;
+	public void setLeg(Leg leg) {
+		this.leg = leg;
 	}
-	public void addLeg(Leg leg) {
-		legs.add(leg);
-	}
+
 	@Override
 	public String toString() {
 		return "Route [summary=" + summary + ", overview_polyline="
 				+ overview_polyline + ", boundNE=" + boundNE + ", boundSW="
 				+ boundSW + ", copyright=" + copyright + ", warnings="
-				+ warnings + ", legs=" + legs + "]";
+				+ warnings + ", leg=" + leg + "]";
 	}
 	
 }

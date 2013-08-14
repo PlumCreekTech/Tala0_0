@@ -6,6 +6,7 @@ public class PlaceQuery {
 	private double longitude;
 	private String places;
 	private int radius;
+	
 	public PlaceQuery(double latitude, double longitude, String placesSpecification, int radius) {
 		this.latitude=latitude;
 		this.longitude=longitude;
