@@ -24,10 +24,10 @@ public class GetDirections extends AsyncTask<DirectionsQuery, Void, Route>
 	protected Route doInBackground(DirectionsQuery... params) {
 		DirectionsQuery dq = params[0];
 		String urlString = makeUrl(dq.getOrigin(), dq.getDestination(), dq.getMode());
-
+		Log.d(TAG, "url string is ::: "+urlString);
 		try {
 			String json = getJSON(urlString);
-			// Log.d(TAG, "JSON ::: "+json);
+			Log.d(TAG, "JSON ::: "+json);
 			JSONObject object = new JSONObject(json);
 			JSONArray routes = object.getJSONArray("routes");
 			Route route = Route.jsonToRoute(routes.getJSONObject(0));
@@ -41,19 +41,19 @@ public class GetDirections extends AsyncTask<DirectionsQuery, Void, Route>
 
 	@Override
 	protected void onPostExecute(Route route) {
-		// TODO post Directions and map it
+		Log.d(TAG, route.toString());
 	}
 
 	// https://maps.googleapis.com/maps/api/place/search/json?location=28.632808,77.218276&radius=500&types=atm&sensor=false&key=apikey
 	private String makeUrl(Location origin, Location destination, String mode) {
 		StringBuilder urlString = new StringBuilder(
-				"https://maps.googleapis.com/maps/api/place/search/json?");
+				"https://maps.googleapis.com/maps/api/directions/json?");
 		urlString.append("origin=" + origin.getLatitude());
 		urlString.append("," + origin.getLongitude());
 		urlString.append("&destination=" + destination.getLatitude());
 		urlString.append("," + destination.getLongitude());
-		urlString.append("&mode" + mode);
 		urlString.append("&sensor=true");
+		urlString.append("&mode=" + mode);
 		Log.d(TAG, urlString.toString());
 		return urlString.toString();
 	}

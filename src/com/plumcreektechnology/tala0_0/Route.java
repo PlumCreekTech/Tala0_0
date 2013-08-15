@@ -32,13 +32,13 @@ public class Route {
 			// set northeast
 			JSONObject jsonLocation = bounds.getJSONObject("northeast");
 			Location location =  new Location("blah");
-			location.setLatitude(jsonLocation.getDouble("latitude"));
-			location.setLongitude(jsonLocation.getDouble("longitude"));
+			location.setLatitude(jsonLocation.getDouble("lat"));
+			location.setLongitude(jsonLocation.getDouble("lng"));
 			result.setBoundNE(location);
 			// set southwest
 			jsonLocation = bounds.getJSONObject("southwest");
-			location.setLatitude(jsonLocation.getDouble("latitude"));
-			location.setLongitude(jsonLocation.getDouble("longitude"));
+			location.setLatitude(jsonLocation.getDouble("lat"));
+			location.setLongitude(jsonLocation.getDouble("lng"));
 			result.setBoundSW(location);
 			
 			result.setCopyright(json.getString("copyrights"));

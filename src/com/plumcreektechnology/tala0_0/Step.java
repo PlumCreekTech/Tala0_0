@@ -30,17 +30,17 @@ public class Step {
 			// set northeast
 			JSONObject jsonLocation = json.getJSONObject("start_location");
 			Location location = new Location("blah");
-			location.setLatitude(jsonLocation.getDouble("latitude"));
-			location.setLongitude(jsonLocation.getDouble("longitude"));
+			location.setLatitude(jsonLocation.getDouble("lat"));
+			location.setLongitude(jsonLocation.getDouble("lng"));
 			result.setStart(location);
 			// set southwest
-			jsonLocation = json.getJSONObject("southwest");
-			location.setLatitude(jsonLocation.getDouble("latitude"));
-			location.setLongitude(jsonLocation.getDouble("longitude"));
+			jsonLocation = json.getJSONObject("end_location");
+			location.setLatitude(jsonLocation.getDouble("lat"));
+			location.setLongitude(jsonLocation.getDouble("lng"));
 			result.setEnd(location);
 
 			result.setInstructions(json.getString("html_instructions"));
-			result.setPolyline(json.getJSONArray("polyline").toString(4));
+			result.setPolyline(json.getJSONObject("polyline").getString("points"));
 			return result;
 		} catch (JSONException ex) {
 			Logger.getLogger(Place.class.getName()).log(Level.SEVERE, null, ex);

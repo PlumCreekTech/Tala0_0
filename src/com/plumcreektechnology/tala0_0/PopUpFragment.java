@@ -17,6 +17,7 @@ public class PopUpFragment extends DialogFragment {
 	
 	private String TAG = getClass().getName();
 	private Activity parentActivity;
+	private AlertDialog dialog;
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -68,7 +69,7 @@ public class PopUpFragment extends DialogFragment {
 					private boolean closeActivity;
 			
 					public void onClick(DialogInterface dialog, int id) {
-						buttonSelected(true);
+						buttonSelected(closeActivity);
 					}
 
 					public boolean getCloseActivity() {
@@ -80,18 +81,28 @@ public class PopUpFragment extends DialogFragment {
 						return this;
 					}
 				}).setCloseActivity(dismiss));
+		
 		builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				Log.d(TAG, dialog.toString()+" ::: "+which); // TODO make useful
 			}
 		});
-		return builder.create();
+		dialog = builder.create();
+		return dialog;
+	}
+	
+	@Override
+	public AlertDialog getDialog() {
+		return dialog;
 	}
 	
 	public void buttonSelected(boolean action) { // CHANGED how this responds to adapt for AffirmativeFragment
 		Log.d(TAG, "hit button neutral");
-		if(action) parentActivity.onBackPressed();
+		if(action) {
+			Log.d(TAG, "should close the activity");
+			parentActivity.onBackPressed();
+		}
 		dismiss();
 	}
 

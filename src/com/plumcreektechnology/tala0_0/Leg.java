@@ -30,13 +30,13 @@ public class Leg {
 			// set start
 			JSONObject jsonLocation = json.getJSONObject("start_location");
 			Location location = new Location("blah");
-			location.setLatitude(jsonLocation.getDouble("latitude"));
-			location.setLongitude(jsonLocation.getDouble("longitude"));
+			location.setLatitude(jsonLocation.getDouble("lat"));
+			location.setLongitude(jsonLocation.getDouble("lng"));
 			result.setStartLocation(location);
 			// set end
 			jsonLocation = json.getJSONObject("end_location");
-			location.setLatitude(jsonLocation.getDouble("latitude"));
-			location.setLongitude(jsonLocation.getDouble("longitude"));
+			location.setLatitude(jsonLocation.getDouble("lat"));
+			location.setLongitude(jsonLocation.getDouble("lng"));
 			result.setEndLocation(location);
 
 			result.setStartAddress(json.getString("start_address"));

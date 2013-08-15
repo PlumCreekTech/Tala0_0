@@ -1,6 +1,6 @@
 package com.plumcreektechnology.tala0_0;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.TreeMap;
 
 import android.annotation.SuppressLint;
@@ -23,8 +23,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -57,6 +55,8 @@ public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver,
 	// -----------------------------------UTILITIES TO BIND----------------------------------------------
 	private LocationService locationService;
 	private boolean locationBound = false;
+	private boolean displayPopup;
+	private boolean creating;
 	private ServiceConnection connection = new ServiceConnection() {
 
 	    public void onServiceConnected(ComponentName className,
@@ -90,17 +90,15 @@ public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tala_main);
-		categoryRadii = new TreeMap<String, Integer>();
 		onOff = getSharedPreferences(PACKAGE, Context.MODE_PRIVATE).getBoolean(ON_OFF_KEY, false);
 		
-		if( getIntent().getBooleanExtra("popup", false)) {
-			// TODO display popup
-			Log.d(TAG, "should display popup fragment from onCreate");
-			displayPopUp(getIntent().getStringArrayExtra("triggers"), true);
+		if(onOff) {
+			Intent intent = new Intent(this, LocationService.class);
+			getApplicationContext().bindService(intent, connection, 0); // TODO bind to running service
+			creating = true;
 		} else {
-			// open the last open fragment (not including popup)
-			Toast.makeText(this, "should display last open fragment", Toast.LENGTH_SHORT).show();
-			// TODO this if placement is in a WEIRD place
+			categoryRadii = new TreeMap<String, Integer>();
+			
 			if (checkPlayServices()) { // only add SettingsFragment (which might start the LocationService) if google play is installed
 				SharedPreferences prefs = getSharedPreferences(KEY_MAIN_PREFERENCE, Context.MODE_PRIVATE);
 				int fragmentId = prefs.getInt(LAST_OPEN_FRAGMENT_KEY, R.id.action_settings);
@@ -123,26 +121,30 @@ public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver,
 				}
 			}
 		}
-	}
-
-	protected void onStart() {
-		super.onStart();
-		if(onOff) {
-			Intent intent = new Intent(this, LocationService.class);
-			getApplicationContext().bindService(intent, connection, 0); // TODO bind to running service
-		}
 		
+		boolean popup = false;
+		if(getIntent().hasExtra("popup")) {
+			popup = getIntent().getBooleanExtra("popup", false);
+			Log.d(TAG, "display popup "+popup);
+		}
+		displayPopup = popup;
 	}
 	
 	@Override
 	protected void onNewIntent(Intent intent) {
 		// onCreate is SKIPPED if onNewIntent() is invoked
 		// make sure on NewIntent() is skipped when onCreate() is invoked
+		if(locationBound) Log.d(TAG, "location is bound");
 		Log.d(TAG, "entered onNewIntent()");
 		if( intent.getBooleanExtra("popup", false)) {
 			// TODO display popup
-			Log.d(TAG, "should display popup fragment from newIntent");
-			displayPopUp(getIntent().getStringArrayExtra("triggers"), false);
+			Log.d(TAG, "pop up is true");
+			String[] sArray = intent.getStringArrayExtra("triggers");
+			if(sArray== null) {
+				Log.d(TAG, "sArray is null");
+			} else {
+				displayPopUp(sArray, false);
+			}
 		}
 	}
 	
@@ -261,31 +263,15 @@ public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver,
 	}
 	
 	private void displayPopUp(String[] triggers, boolean dismiss) {
-		ArrayList<String> activeTrigs = locationService.getActiveIds();
-
-		// combine the arrays without repeats
+		displayPopup = false;
+		String[] names = new String[triggers.length];
 		for(int i=0; i<triggers.length; i++) {
-			String trigger = triggers[i];
-			boolean add = true;
-			for(int j=0; j<activeTrigs.size(); j++) {
-				if(trigger.equals(activeTrigs.get(j))) { // try it without maybe ? pointers ?
-					add=false;
-				}
-			}
-			if(add) {
-				activeTrigs.add(trigger);
-			}
+			names[i] = locationService.getReadableFromId(triggers[i]);
 		}
-		
-		
-		String[] names = new String[activeTrigs.size()];
-		for(int i=0; i<triggers.length; i++) {
-			names[i] = locationService.getReadableFromId(activeTrigs.get(i));
-		}
-		PopUpFragment popup = PopUpFragment.newInstance( (String[]) activeTrigs.toArray(), names, dismiss);
-		popupList = ((AlertDialog) popup.getDialog()).getListView();
+		PopUpFragment popup = PopUpFragment.newInstance( triggers, names, dismiss);
+		AlertDialog d = (AlertDialog) popup.getDialog();
+		//popupList = d.getListView();
 	    popup.show(getFragmentManager(), TAG);
-	    locationService.setActiveIds(activeTrigs);
 	}
 	
 // -----------------------------------SETTINGS UTILITIES----------------------------------------------
@@ -382,7 +368,40 @@ public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver,
 	 */
 	public void onBound() {
 		locationService.setHandler(locationHandler);
-		locationService.setCategoryRadii(categoryRadii);
+		
+		if(creating) {
+			creating = false;
+			categoryRadii = locationService.getCategoryRadii();
+			
+			if(displayPopup) {
+				// TODO display popup
+				Log.d(TAG, "should display popup fragment from onCreate");
+				String[] sArray = getIntent().getExtras()
+						.getStringArray("triggers");
+				Log.d(TAG, Arrays.toString(sArray));
+				displayPopUp(sArray, true);
+			} else if (checkPlayServices()) { // only add SettingsFragment (which might start the LocationService) if google play is installed
+				SharedPreferences prefs = getSharedPreferences(KEY_MAIN_PREFERENCE, Context.MODE_PRIVATE);
+				int fragmentId = prefs.getInt(LAST_OPEN_FRAGMENT_KEY, R.id.action_settings);
+				switch(fragmentId) { // always assume that a fragment is active
+				case(R.id.action_settings):
+					fragAdder(new SettingsFragment(), false);
+					prefs.edit().putInt(LAST_OPEN_FRAGMENT_KEY, R.id.action_settings); // add frag as last open
+					break;
+				case(R.id.action_temp):
+					fragAdder(new TemporaryFragment(), false);
+					prefs.edit().putInt(LAST_OPEN_FRAGMENT_KEY, R.id.action_temp); // add frag as last open
+					break;
+				case(R.id.action_map):
+					MapFragment mapFrag = instantiateMapFragment();
+					fragAdder(mapFrag, false);
+					GoogleMap map = mapFrag.getMap();
+					if(map!=null) map.setMyLocationEnabled(true);
+					prefs.edit().putInt(LAST_OPEN_FRAGMENT_KEY, R.id.action_map); // add frag as last open
+					break;
+				}
+			}
+		} else locationService.setCategoryRadii(categoryRadii);
 	}
 	
 	/**
@@ -421,21 +440,21 @@ public class TalaMain extends Activity implements SliderReceiver, OnOffReceiver,
 	@Override
 	public void removeButton(String geoId, View v) {
 		Log.d(TAG, "removeButton callback");
-		popupList.removeView(v);
-		locationService.removeActiveId(geoId); // pointers SHOULD match but hey, who knows
+		// popupList.removeView(v);
+		// locationService.removeActiveId(geoId); // TODO pointers SHOULD match but hey, who knows
 	}
 
 	@Override
 	public void infoButton(String geoId) {
-		Log.d(TAG, "infoButton callback");
+		Log.d(TAG, "infoButton callback "+geoId);
 		
-		// TODO get and display info with async task
 	}
 
 	@Override
 	public void visitButton(String geoId) {
-		Log.d(TAG, "visitButton callback");
-		
+		Log.d(TAG, "visitButton callback "+geoId);
+		DirectionsQuery directionQ = new DirectionsQuery(locationService.getCurrentLocation(), locationService.getLocationOfPlace(geoId));
+		new GetDirections().execute(directionQ);
 		// TODO get and diplay directions on the map with async task
 	}
 

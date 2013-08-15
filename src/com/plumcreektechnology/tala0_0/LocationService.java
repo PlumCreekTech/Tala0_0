@@ -5,8 +5,11 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,7 +17,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
@@ -29,19 +31,13 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationClient;
-import com.google.android.gms.location.LocationClient.OnAddGeofencesResultListener;
-import com.google.android.gms.location.LocationClient.OnRemoveGeofencesResultListener;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationStatusCodes;
 
 public class LocationService extends Service implements Tala_Constants,
 		GooglePlayServicesClient.ConnectionCallbacks,
 		GooglePlayServicesClient.OnConnectionFailedListener,
-		com.google.android.gms.location.LocationListener,
-		OnAddGeofencesResultListener,
-		LocationClient.OnRemoveGeofencesResultListener {
+		com.google.android.gms.location.LocationListener {
 
 	// constants
 	private final String TAG = getClass().getName();
@@ -49,7 +45,7 @@ public class LocationService extends Service implements Tala_Constants,
 	private LocationClient locationClient;
 	private TreeMap<String, Integer> categoryRadii;
 //	private String placeSpecification;
-	private TreeMap<String, Place> activeFences;
+	private TreeMap<String, Place> activePlaces;
 	private ArrayList<String> activeIds = new ArrayList<String>();
 	private Location currentLocation;
 
@@ -106,7 +102,7 @@ public class LocationService extends Service implements Tala_Constants,
 	public void onCreate() {
 		super.onCreate();
 		// MAKE SURE THAT YOU CHECK THAT THE DEVICE HAS GOOGLE SERVICES IN THE MAIN BEFORE STARTING THIS SERVICE
-		activeFences = new TreeMap<String, Place>();
+		activePlaces = new TreeMap<String, Place>();
 		locationRequest = LocationRequest.create();
 		locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 		locationRequest.setInterval(UPDATE_INTERVAL_MS);
@@ -131,35 +127,6 @@ public class LocationService extends Service implements Tala_Constants,
 	public void onDestroy() {
 		super.onDestroy();
 		if(locationClient.isConnected()) {
-			if(activeFences.size()>0) {
-				Log.d(TAG, "should be removing geofences");
-				locationClient.removeGeofences(placeMapToIDList(activeFences), new OnRemoveGeofencesResultListener() {
-
-					@Override
-					public void onRemoveGeofencesByPendingIntentResult(
-							int arg0, PendingIntent arg1) {
-						Log.d(TAG, "remove geofences by pending intent... we shouldn't be here");
-					}
-
-					@Override
-					public void onRemoveGeofencesByRequestIdsResult(int status,
-							String[] requestIDs) {
-						switch(status) {
-						case (LocationStatusCodes.SUCCESS):
-							Log.d(TAG, "removed "+requestIDs.length+" geofences successfully");
-							break;
-						case (LocationStatusCodes.ERROR):
-							Log.d(TAG, "didn't remove "+requestIDs.length+" geofences due to error");
-							break;
-						case (LocationStatusCodes.GEOFENCE_NOT_AVAILABLE):
-							Log.d(TAG, "didn't remove "+requestIDs.length+" geofences due to geofence not available");
-							break;
-						}
-					}
-					
-				});
-			}
-			//new RemoveFences().execute(activeFences);
 			locationClient.removeLocationUpdates(this);
 			locationClient.disconnect();
 		}
@@ -201,11 +168,11 @@ public class LocationService extends Service implements Tala_Constants,
 	 */
 	@Override
 	public void onLocationChanged(Location location) {
+		Log.d(TAG, "location changed");
 		currentLocation = location;
 		// if there are categories checked, get the nearby places that fit the criteria
 		if(categoryRadii.size()>0) new GetPlaces().execute(new PlaceQuery(location.getLatitude(), location.getLongitude(), makePlaceSpecification(), 50000));
-		// if there are not categories checked AND there are fences, call MakeFences in such a way that it removes all fences
-		else if (activeFences.size()>0) new MakeFences().execute(new TreeMap<String, Place>());
+		else Log.d(TAG, "categories has size "+categoryRadii.size());
 		// if there are no categories and no fences then do nothing
 		
 		// if the activity is running, send it this info
@@ -230,108 +197,69 @@ public class LocationService extends Service implements Tala_Constants,
 		categoryRadii = map;
 	}
 	
+	public TreeMap<String, Integer> getCategoryRadii() {
+		return categoryRadii;
+	}
+	
 	public String getReadableFromId(String id) {
-		return activeFences.get(id).getName();
+		return activePlaces.get(id).getName();
 	}
 
 	
-// -----------------------------------GEOFENCE METHODS----------------------------------------------
-	
-	@SuppressWarnings("unchecked") // TODO is this bad?
-	private void updateGeofences(TreeMap<String, Place> placeMap) {
-		new MakeFences().execute(placeMap);
-	}
+// -----------------------------------PROXIMITY METHODS----------------------------------------------
 	
 	private class MakeFences extends
 			AsyncTask< TreeMap<String, Place>, Void, TreeMap<String, Place>> {
-		
-		private TreeMap<String, Place> oldFences;
-		private LocationClient client;
-		private OnAddGeofencesResultListener addListener;
-		private LocationClient.OnRemoveGeofencesResultListener removeListener;
-		
-		@Override
-		protected void onPreExecute() {
-			oldFences = activeFences;
-			client = locationClient;
-			addListener = LocationService.this;
-			removeListener = LocationService.this;
-		}
 		
 		@Override
 		protected TreeMap<String, Place> doInBackground(TreeMap<String, Place>... params) {
 			
 			//if(!client.isConnected()) return new TreeMap<String, Place>();
-			TreeMap<String, Place> newFences = params[0];
+			TreeMap<String, Place> newPlaces = (TreeMap<String, Place>) params[0];
 			
 			// if distance between a potential new fence, and current location is less than 
 			// category radii distance of its type, don't make a geofence for it, make an alert for it
-			ArrayList<String> removeIDs = new ArrayList<String>();
-			for( Entry<String, Place> entry : newFences.entrySet()) {
+			TreeMap<String, Place> triggerMap = new TreeMap<String, Place>();
+			ArrayList<String> triggerArrayList = new ArrayList<String>();
+			for( Entry<String, Place> entry : newPlaces.entrySet()) {
 				Location dest = new Location("blah");
 				dest.setLatitude(entry.getValue().getLatitude());
 				dest.setLongitude(entry.getValue().getLongitude());
 				int dist = (int) currentLocation.distanceTo(dest);
-				Log.d(TAG, "distance to "+entry.getValue().getName()+" is "+(float)(dist/1609.34));
+				//Log.d(TAG, "distance to "+entry.getValue().getName()+" is "+(float)(dist/1609.34));
 				if( dist < typesAverage(entry.getValue().getTypes())) {
-					Log.v(TAG, entry.getValue().getName()+" is already within proximity");
-					removeIDs.add(entry.getKey());
+					//Log.v(TAG, entry.getValue().getName()+" is already within proximity");
+					triggerMap.put(entry.getKey(), entry.getValue());
+					triggerArrayList.add(entry.getKey());
 				}
 			}
-			Log.v(TAG, "eliminating "+removeIDs.size()+" potential geofences");
-			for( String id : removeIDs) {
-				newFences.remove(id);
+			
+			Log.d(TAG, "size is "+triggerArrayList.size());
+			String[] sArray = triggerArrayList.toArray(new String[triggerArrayList.size()]);
+			
+			Log.d(TAG, Arrays.toString(sArray));
+			
+			if(sArray.length > 0) {
+				activePlaces = triggerMap;
+
+				// start application
+				Intent intend = new Intent(getApplicationContext(),
+						TalaMain.class);
+				intend.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK
+						| /* Intent.FLAG_ACTIVITY_CLEAR_TOP
+						| */ Intent.FLAG_ACTIVITY_SINGLE_TOP);
+				intend.putExtra("triggers", sArray);
+				intend.putExtra("popup", true);
+				getApplicationContext().startActivity(intend);
 			}
 			
-			
-			TreeMap<String, Place> realFences = new TreeMap<String, Place>();
-//			Log.d(TAG, "old fences before loop has "+oldFences.size());
-			Log.d(TAG, "new fences before loop has "+newFences.size());
-//			Log.d(TAG, "real fences before loop has "+realFences.size());
-			removeIDs.clear();
-			for( Entry<String, Place> entry : oldFences.entrySet()) {
-				if(newFences.containsKey(entry.getKey())) {
-					Place place = entry.getValue();
-					realFences.put(place.getId(), place);
-					newFences.remove(place.getId());
-					removeIDs.add(place.getId());
-				}
-			}
-			for( String id : removeIDs) {
-				oldFences.remove(id);
-			}
-			Log.d(TAG, "old fences after loop has "+oldFences.size());
-			Log.d(TAG, "new fences after loop has "+newFences.size());
-			Log.d(TAG, "real fences after loop has "+realFences.size());
-			// need to sort out some stuff
-			if(!oldFences.isEmpty()) {
-				client.removeGeofences(placeMapToIDList(oldFences), removeListener);
-			}
-			if(!newFences.isEmpty()) {
-				client.addGeofences(placeMapToGeolist(newFences), getGeofenceReceiverIntent(), addListener);
-			}
-			realFences.putAll(newFences);
-			return realFences;
+			return triggerMap;
 		}
 				
 		@Override
-		protected void onPostExecute(TreeMap<String, Place> list) {
-			activeFences = list;
+		protected void onPostExecute(TreeMap<String, Place> map) {
+			//activePlaces = map;
 		}
-	}
-	
-	public ArrayList<Geofence> placeMapToGeolist(TreeMap<String, Place> placeList) {
-		ArrayList<Geofence> geoList = new ArrayList<Geofence>();
-		
-		for(Place place : placeList.values()) {
-			geoList.add(new Geofence.Builder()
-			.setRequestId(place.getId())
-			.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-			.setCircularRegion(place.getLatitude(), place.getLongitude(), typesAverage(place.getTypes())) // default radius of 3000
-			.setExpirationDuration(Geofence.NEVER_EXPIRE)
-			.build() );					// TODO read in radii!!!
-		}
-		return geoList;
 	}
 	
 	private int typesAverage(String[] types) {
@@ -353,13 +281,6 @@ public class LocationService extends Service implements Tala_Constants,
 			}
 		return iDList;
 	}
-	
-	public PendingIntent getGeofenceReceiverIntent() {
-		Log.d(TAG, "getting Geofence pending intent");
-		Intent intent = new Intent(getApplicationContext(), GeofenceReceiverService.class);
-		return PendingIntent.getService(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-	}
-
 
 // -----------------------------------PLACES API METHODS----------------------------------------------
 
@@ -447,9 +368,10 @@ public class LocationService extends Service implements Tala_Constants,
 			return treeMap;
 		}
 		
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void onPostExecute(TreeMap<String, Place> map) {
-			updateGeofences(map);
+			new MakeFences().execute(map);
 		}
 	}
 
@@ -475,12 +397,12 @@ public class LocationService extends Service implements Tala_Constants,
 			urlString.append("&types=" + place);
 			urlString.append("&sensor=true&key=" + API_KEY);
 		}
-		Log.d(TAG, urlString.toString());
+		//Log.d(TAG, urlString.toString());
 		return urlString.toString();
 	}
 	
 	private String makeTokenUrl(String token) {
-		Log.d(TAG, "making token url");
+		//Log.d(TAG, "making token url");
 		StringBuilder urlString = new StringBuilder("https://maps.googleapis.com/maps/api/place/search/json?");
 		urlString.append("pagetoken="+token);
 		urlString.append("&sensor=true&key=" + API_KEY);
@@ -510,72 +432,14 @@ public class LocationService extends Service implements Tala_Constants,
 		return content.toString();
 	}
 
-// -----------------------------------SETTINGS UTILITIES----------------------------------------------
-	
-	@Override
-	public void onAddGeofencesResult(int status, String[] requestIDs) {
-		switch(status) {
-		case (LocationStatusCodes.SUCCESS):
-			Log.d(TAG, "added "+requestIDs.length+" geofences successfully");
-			break;
-		case (LocationStatusCodes.ERROR):
-			Log.d(TAG, "didn't add "+requestIDs.length+" geofences due to error");
-			break;
-		case (LocationStatusCodes.GEOFENCE_NOT_AVAILABLE):
-			Log.d(TAG, "didn't add "+requestIDs.length+" geofences due to geofence not available");
-			break;
-		case (LocationStatusCodes.GEOFENCE_TOO_MANY_GEOFENCES):
-			Log.d(TAG, "didn't add "+requestIDs.length+" geofences due to too many geofences");
-			break;
-		case (LocationStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS):
-			Log.d(TAG, "didn't add "+requestIDs.length+" geofences due to too many pending intents");
-			break;
-		}
+	public Location getCurrentLocation() {
+		return currentLocation;
 	}
 
-	@Override
-	public void onRemoveGeofencesByPendingIntentResult(int status, PendingIntent pendingIntent) {	
-		switch(status) {
-		case (LocationStatusCodes.SUCCESS):
-			Log.d(TAG, "removed "+pendingIntent+" geofences successfully");
-			break;
-		case (LocationStatusCodes.ERROR):
-			Log.d(TAG, "didn't remove "+pendingIntent+" geofences due to error");
-			break;
-		case (LocationStatusCodes.GEOFENCE_NOT_AVAILABLE):
-			Log.d(TAG, "didn't remove "+pendingIntent+" geofences due to geofence not available");
-			break;
-		}
+	public Location getLocationOfPlace(String geoId) {
+		Location loc = new Location("blah");
+		loc.setLatitude(activePlaces.get(geoId).getLatitude());
+		loc.setLongitude(activePlaces.get(geoId).getLongitude());
+		return loc;
 	}
-
-	@Override
-	public void onRemoveGeofencesByRequestIdsResult(int status, String[] requestIDs) {
-		switch(status) {
-		case (LocationStatusCodes.SUCCESS):
-			Log.d(TAG, "removed "+requestIDs.length+" geofences successfully");
-			break;
-		case (LocationStatusCodes.ERROR):
-			Log.d(TAG, "didn't remove "+requestIDs.length+" geofences due to error");
-			break;
-		case (LocationStatusCodes.GEOFENCE_NOT_AVAILABLE):
-			Log.d(TAG, "didn't remove "+requestIDs.length+" geofences due to geofence not available");
-			break;
-		}
-	}
-
-	public ArrayList<String> getActiveIds() {
-		return activeIds;
-	}
-
-	public void setActiveIds(ArrayList<String> activeIds) {
-		this.activeIds = activeIds;
-	}
-	
-	public void removeActiveId(String geoId) {
-		Log.d(TAG, "before remove activeIds size is "+activeIds.size());
-		activeIds.remove(geoId);
-		Log.d(TAG, "after remove activeIds size is "+activeIds.size());
-	}
-
-
 }
